@@ -11,7 +11,8 @@ class RichPresence():
     client = pypresence.Presence(client_id)
     HoI4_User_Directory = ""
     HoI4_RichPresence_Path = ""
-
+    Current_SaveGamePath = "" #Temporary until setup.py was integrated
+    """
     def GetConfig():
         CommonPath_RP = f"C:\\Users\\{os.getlogin()}\\Documents\\Paradox Interactive\\Hearts of Iron IV\\RichPresence\\"
         if os.path.exists(path=CommonPath_RP) == False:
@@ -37,13 +38,14 @@ class RichPresence():
                 config = json.load(fp=file)
             RichPresence.HoI4_User_Directory = config["HoI4_User_Directory"]
             RichPresence.HoI4_RichPresence_Path = config["HoI4_RichPresence_Path"]
-
+    """ #REPO UPLOAD!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     def GetLatestSaveGame():
-        RichPresence.GetConfig()
-        SaveGamePath = f"{RichPresence.HoI4_User_Directory}\\save games"
-        if os.path.exists(path=SaveGamePath):
+        #RichPresence.GetConfig()
+        #SaveGamePath = f"{RichPresence.HoI4_User_Directory}\\save games"
+        CommonPath = f"C:\\Users\\{os.getlogin()}\\Documents\\Paradox Interactive\\Hearts of Iron IV\\save games"
+        if os.path.exists(path=CommonPath):
             #Get all savegame files
-            Files = os.listdir(path=SaveGamePath)
+            Files = os.listdir(path=CommonPath)
             #Check if there are any files ending with .hoi4
             if len(Files) == 0:
                 return 0
@@ -57,15 +59,66 @@ class RichPresence():
             #Get latest modified file
             Last_Modifications = []
             for latest_savegame in SaveGameFiles:
-                Last_Modifications.append(os.path.getmtime(filename=f"{SaveGamePath}\\{latest_savegame}"))
+                Last_Modifications.append(os.path.getmtime(filename=f"{CommonPath}\\{latest_savegame}"))
             last_modified = max(Last_Modifications)
             index = Last_Modifications.index(last_modified)
             LastSaveGame = SaveGameFiles[index]
-            return f"{SaveGamePath}\\{LastSaveGame}"
+            return f"{CommonPath}\\{LastSaveGame}"
+        elif os.path.exists(path=RichPresence.Current_SaveGamePath):
+            #Get all savegame files
+            Files = os.listdir(path=RichPresence.Current_SaveGamePath)
+            #Check if there are any files ending with .hoi4
+            if len(Files) == 0:
+                return 0
+            SaveGameFiles = []
+            for savegame in Files:
+                if savegame.endswith(".hoi4"):
+                    SaveGameFiles.append(savegame)
+            #Check if there are any .hoi4 files
+            if len(SaveGameFiles) == 0:
+                return 0
+            #Get latest modified file
+            Last_Modifications = []
+            for latest_savegame in SaveGameFiles:
+                Last_Modifications.append(os.path.getmtime(filename=f"{RichPresence.Current_SaveGamePath}\\{latest_savegame}"))
+            last_modified = max(Last_Modifications)
+            index = Last_Modifications.index(last_modified)
+            LastSaveGame = SaveGameFiles[index]
+            return f"{RichPresence.Current_SaveGamePath}\\{LastSaveGame}"
         else:
-            print("You seem to be missing a save games folder. Did you install the game correctly?")
-            input("Press any key to exit..")
-            sys.exit(0)
+            found_sg_folder = False
+            while found_sg_folder != True:
+                manual_path = input("Couldn't find the save games folder. Where do you keep it? ")
+                if os.path.exists(path=manual_path) == True:
+                    RichPresence.Current_SaveGamePath = manual_path
+                    found_sg_folder = True
+                    #RichPresence.HoI4_User_Directory = manual_path
+                    #Get all savegame files
+                    Files = os.listdir(path=manual_path)
+                    #Check if there are any files ending with .hoi4
+                    if len(Files) == 0:
+                        return 0
+                    SaveGameFiles = []
+                    for savegame in Files:
+                        if savegame.endswith(".hoi4"):
+                            SaveGameFiles.append(savegame)
+                    #Check if there are any .hoi4 files
+                    if len(SaveGameFiles) == 0:
+                        return 0
+                    #Get latest modified file
+                    Last_Modifications = []
+                    for latest_savegame in SaveGameFiles:
+                        Last_Modifications.append(os.path.getmtime(filename=f"{manual_path}\\{latest_savegame}"))
+                    last_modified = max(Last_Modifications)
+                    index = Last_Modifications.index(last_modified)
+                    LastSaveGame = SaveGameFiles[index]
+                    return f"{manual_path}\\{LastSaveGame}"
+                else:
+                    continue
+            #ToDo! => Setup.py integration
+            #print("You seem to be missing a save games folder. Did you install the game correctly?")
+            #input("Press any key to exit..")
+            #sys.exit(0)
 
     def ReadLatestSaveGame():
         LastSaveGameFile = RichPresence.GetLatestSaveGame()
@@ -114,7 +167,9 @@ class RichPresence():
         Ideology = ""
         #Check if SaveGame exists, if not => Try again in 60 seconds
         if data == 0:
-            RichPresence.client.update(details="Starting the game..", large_image="hoi4_logo") #CHANGE MORE PARAMETERS
+            print("Waiting for a savegame file..")
+            print("Trying again in 60 seconds.")
+            RichPresence.client.update(details="Starting the game..", large_image="hoi4_logo")
             time.sleep(60)
         elif data != 0:
             if data[1] == "democratic":
@@ -126,7 +181,7 @@ class RichPresence():
             if data[1] == "neutrality":
                 Ideology = "Neutrality"
             CountryName = CountryDict.Dict[data[0]][Ideology]
-            print("Data[0]: ", data[0])
+            print("CountryTag: ", data[0])
             print("Ideology:", Ideology)
             if Ideology == "Democratic":
                 Ideology = "Democratic"
@@ -154,6 +209,8 @@ class RichPresence():
         while GameRunning:
             GameRunning = RichPresence.CheckIfGameIsRunning()
             if GameRunning != True:
+                print("Game isn't running. Exiting..")
+                time.sleep(5)
                 break
             RichPresence.UpdatePresence()
         RichPresence.client.close()
