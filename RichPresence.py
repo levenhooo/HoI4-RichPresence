@@ -38,7 +38,7 @@ class RichPresence():
                 config = json.load(fp=file)
             RichPresence.HoI4_User_Directory = config["HoI4_User_Directory"]
             RichPresence.HoI4_RichPresence_Path = config["HoI4_RichPresence_Path"]
-    """ #REPO UPLOAD!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    """
     def GetLatestSaveGame():
         #RichPresence.GetConfig()
         #SaveGamePath = f"{RichPresence.HoI4_User_Directory}\\save games"
