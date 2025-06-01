@@ -2,8 +2,9 @@
 A Hearts of Iron IV Discord Rich Presence that displays the current nation, year and ideology
 
 # Installation
-1. Go to: Documents/Paradox Interactive/Hearts of Iron IV/settings.txt
-2. Open settings.txt and fine line 71:
+1. Download the latest RichPresence.exe from the Releases page
+2. Go to: Documents/Paradox Interactive/Hearts of Iron IV/settings.txt
+3. Open settings.txt and fine line 71:
    save_as_binary=yes
    Change it to:
    save_as_binary_no
