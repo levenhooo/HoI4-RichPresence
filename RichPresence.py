@@ -134,7 +134,7 @@ class RichPresence():
                         break
                     data.append(line)
         except:
-            print("Couldn't read the savegame. Did you execute the setup?")
+            print("Couldn't read the savegame. Did you follow the installation guide?")
             input("Press any key to exit..")
             sys.exit(0)
         new_data = []
