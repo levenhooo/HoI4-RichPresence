@@ -5,3 +5,4 @@ A Hearts of Iron IV Discord Rich Presence
 The rich presence gets the data from the latest savegame
 
 # Currently not usable!
+ 
