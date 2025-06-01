@@ -1,8 +1,13 @@
 # HoI4-RichPresence
-A Hearts of Iron IV Discord Rich Presence
+A Hearts of Iron IV Discord Rich Presence that displays the current nation, year and ideology
 
-# How it works
-The rich presence gets the data from the latest savegame
+# Installation
+1. Go to: Documents/Paradox Interactive/Hearts of Iron IV/settings.txt
+2. Open settings.txt and fine line 71:
+   save_as_binary=yes
+   Change it to:
+   save_as_binary_no
+This makes all newly created savegames readable to the RPC.
 
-# Currently not usable!
- 
+# Run the RPC
+Start the game first, then run RichPresence.exe
