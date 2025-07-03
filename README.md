@@ -12,3 +12,5 @@ This makes all newly created savegames readable to the RPC.
 
 # Run the RPC
 Start the game first, then run RichPresence.exe
+
+# If your antivirus flags it as a virus, don’t worry – it’s a false positive. The source code is public and available for review.
